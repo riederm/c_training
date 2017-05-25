@@ -26,6 +26,12 @@ List* init_list(void){
 }
 
 
+void clearNode(Node* node){
+    node->data = NULL;
+    node->next = NULL;
+}
+
+
 Node* createNode(int key, char* data){
     Node* node = malloc(sizeof(Node));
     node->key = key;
@@ -57,32 +63,41 @@ Node* insert_end(List* list, int key, char* data){
     return list->pLast;
 }
 
-Node** getLastNextPointer(Node* pHead){
-    Node* current = pHead;
-    while(current->next != NULL){
-        current = current->next;
+Node* remove_beginning(List* list){
+    if (list->size == 0){
+        return NULL;
     }
     
-    return &(current->next);
+    Node* toRemove = list->pHead;
+    list->pHead = list->pHead->next;
+    list->size--;
+    
+    if (list->size <= 1){
+       list->pLast = list->pHead;   
+    }
+    
+    clearNode(toRemove);
+    return toRemove;
 }
 
 
-Node* appendNode(Node* pHead, int value, char* data){
-    Node** ppNext = getLastNextPointer(pHead);
-    *ppNext = createNode(value, data);
-    return *ppNext;
-}
-
-
-Node* get(Node* pHead, int index){
-    int i = 0;
-    Node* current = pHead;
-    while(i < index && current != NULL){
-        current = current->next;
-        i++;
+void remove_end(List* list){
+    if (list->size == 0){
+        return NULL;
+    }else if (list->size == 1){
+        return remove_beginning(list);
     }
     
-    return current;       
+    //find the node before the last node
+    Node* pNode = list->pHead;
+    while(pNode->next != list->pLast){
+       pNode = pNode->next;
+    }
+    
+    list->size--;
+    clearNode(list->pLast);
+    pNode->next = NULL;
+    list->pLast = pNode;
 }
 
 void printList(List* list){
@@ -111,7 +126,17 @@ void delete(Node* pHead){
             next = current->next;
         }
     }while(current != NULL);
-    
+}
+        
+char* get_key(List* list, int key){
+    Node* pHead = list->pHead;
+    while(pHead != NULL && pHead->key != key){
+        pHead = pHead->next;
+    }
+    if (pHead != NULL){
+        return pHead->data;
+    }
+    return NULL;
 }
 
 int main(void)
@@ -131,13 +156,32 @@ int main(void)
     
     
     List* l3 = init_list();
-    insert_end(l3, 1, "e_one");
-    insert_end(l3, 2, "e_two");
-    insert_end(l3, 3, "e_three");   
-    insert_beginning(l3, 3, "b_three");
-    insert_beginning(l3, 2, "b_two");
-    insert_beginning(l3, 1, "b_one");
+    insert_end(l3, 1, "end_one");
+    insert_end(l3, 2, "end_two");
+    insert_end(l3, 3, "end_three");   
+    insert_beginning(l3, 3, "begin_three");
+    insert_beginning(l3, 2, "begin_two");
+    insert_beginning(l3, 1, "begin_one");
     printList(l3);
+    
+    printf("\nget_key...\n");
+    printf("get_key(%d) = %s\n", 3, get_key(l3, 3));
+    printf("get_key(%d) = %s\n", 2, get_key(l3, 2));
+    printf("get_key(%d) = %s\n", 1, get_key(l3, 1));
+    
+    printf("\nremoving...\n");
+    remove_beginning(l3);
+    printList(l3);
+    remove_beginning(l3);
+    printList(l3);
+    remove_beginning(l3);
+    printList(l3);
+    
+    printf("\nget_key...\n");
+    printf("get_key(%d) = %s\n", 3, get_key(l3, 3));
+    printf("get_key(%d) = %s\n", 2, get_key(l3, 2));
+    printf("get_key(%d) = %s\n", 1, get_key(l3, 1));
+    
     
     /*Node* pHead = createNode(0, "");
     appendNode(pHead, 1, "");
