@@ -1,3 +1,4 @@
+// bachmann c_training - mathias rieder
 
 #include  <stdio.h>
 #include <stdlib.h>
@@ -251,4 +252,7 @@ int main(void)
     // String with key 52: Test String 3
     free_list(l);
     // All memory on the heap is freed!
+
+
+    
 }
