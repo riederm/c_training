@@ -1,4 +1,4 @@
-//gcc 5.4.0
+// bachmann c_training - mathias rieder
 
 #include  <stdio.h>
 
